@@ -55,7 +55,7 @@ public final class FoodListCommand {
 	static int showFoodListSize(CommandContext<CommandSourceStack> context, Player target) {
 		var progressInfo = FoodList.get(target).getProgressInfo();
 		
-		var progressDesc = localizedQuantityComponent("size.desc.foods_eaten", progressInfo.foodsEaten);
+		var progressDesc = localizedQuantityComponent("size.desc.food_value", progressInfo.foodValue);
 		sendFeedback(context.getSource(), progressDesc, false);
 		
 		var milestoneDesc = progressInfo.hasReachedMax()

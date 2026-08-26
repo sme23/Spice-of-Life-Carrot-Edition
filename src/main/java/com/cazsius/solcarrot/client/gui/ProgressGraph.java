@@ -26,8 +26,8 @@ final class ProgressGraph extends UIElement {
 		int previousMilestone = milestonesAchieved > 0 ? SOLCarrotConfig.milestone(milestonesAchieved - 1) : 0;
 		int nextMilestone = progressInfo.nextMilestone();
 		boolean hasReachedMax = progressInfo.hasReachedMax();
-		boolean hasSurpassedMax = hasReachedMax && progressInfo.foodsEaten > previousMilestone;
-		int progress = segmentLength * (progressInfo.foodsEaten - previousMilestone) / (nextMilestone - previousMilestone);
+		boolean hasSurpassedMax = hasReachedMax && progressInfo.foodValue > previousMilestone;
+		int progress = segmentLength * (progressInfo.foodValue - previousMilestone) / (nextMilestone - previousMilestone);
 		int progressX = leftPoint + (hasSurpassedMax ? segmentLength : progress);
 		
 		UIImage carrotIcon = new UIImage(FoodBookScreen.carrotImage);
@@ -61,12 +61,12 @@ final class ProgressGraph extends UIElement {
 			children.add(UIBox.horizontalLine(leftEdge, leftPoint, lineY, FoodBookScreen.fullBlack));
 		}
 		
-		UILabel foodsEatenLabel = new UILabel("" + progressInfo.foodsEaten);
-		foodsEatenLabel.color = FoodBookScreen.fullBlack;
-		foodsEatenLabel.tooltip = localized("gui", "food_book.stats.tooltip.foods_tasted", progressInfo.foodsEaten);
-		foodsEatenLabel.setCenterX(progressX);
-		foodsEatenLabel.setMinY(lineY + 7);
-		children.add(foodsEatenLabel);
+		UILabel foodValueLabel = new UILabel("" + progressInfo.foodValue);
+		foodValueLabel.color = FoodBookScreen.fullBlack;
+		foodValueLabel.tooltip = localized("gui", "food_book.stats.tooltip.food_value", progressInfo.foodValue);
+		foodValueLabel.setCenterX(progressX);
+		foodValueLabel.setMinY(lineY + 7);
+		children.add(foodValueLabel);
 		children.add(UIBox.verticalLine(progressX, lineY + 1, lineY + 5, FoodBookScreen.fullBlack));
 		
 		if (!hasReachedMax) {
@@ -90,11 +90,13 @@ final class ProgressGraph extends UIElement {
 		// if the last milestone is visible, there are no more milestones beyond the right edge, so the line is fainter.
 		children.add(UIBox.horizontalLine(rightPoint + 1, rightEdge, lineY, isLastMilestoneVisible ? FoodBookScreen.leastBlack : FoodBookScreen.lessBlack));
 		
-		int totalFoodCount = foodData.validFoods.size();
-		if (progressInfo.foodsEaten < totalFoodCount) {
-			UILabel totalFoodsLabel = new UILabel(formatBigNumber(totalFoodCount));
+		int totalFoodValue = foodData.validFoods.stream()
+			.mapToInt(food -> food.getDefaultInstance().getFoodProperties(null).nutrition())
+			.sum();
+		if (progressInfo.foodValue < totalFoodValue) {
+			UILabel totalFoodsLabel = new UILabel(formatBigNumber(totalFoodValue));
 			totalFoodsLabel.color = FoodBookScreen.leastBlack;
-			totalFoodsLabel.tooltip = localized("gui", "food_book.stats.tooltip.total_foods", totalFoodCount);
+			totalFoodsLabel.tooltip = localized("gui", "food_book.stats.tooltip.total_food_value", totalFoodValue);
 			totalFoodsLabel.setMinX(rightEdge + padding);
 			totalFoodsLabel.setCenterY(lineY);
 			children.add(totalFoodsLabel);

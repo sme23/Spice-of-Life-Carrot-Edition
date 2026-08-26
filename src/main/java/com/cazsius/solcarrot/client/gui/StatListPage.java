@@ -22,15 +22,18 @@ final class StatListPage extends Page {
 		
 		String foodsTasted;
 		if (SOLCarrotConfig.shouldShowUneatenFoods()) {
-			foodsTasted = fraction(progressInfo.foodsEaten, foodData.validFoods.size());
+			int totalFoodValue = foodData.validFoods.stream()
+				.mapToInt(food -> food.getDefaultInstance().getFoodProperties(null).nutrition())
+				.sum();
+			foodsTasted = fraction(progressInfo.foodValue, totalFoodValue);
 		} else {
-			foodsTasted = "" + progressInfo.foodsEaten;
+			foodsTasted = "" + progressInfo.foodValue;
 		}
 		
 		mainStack.addChild(statWithIcon(
 			FoodBookScreen.carrotImage,
 			foodsTasted,
-			localized("gui", "food_book.stats.foods_tasted")
+			localized("gui", "food_book.stats.food_value")
 		));
 		
 		mainStack.addChild(makeSeparatorLine());
