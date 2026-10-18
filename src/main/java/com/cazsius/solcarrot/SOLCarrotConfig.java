@@ -146,7 +146,7 @@ public final class SOLCarrotConfig {
 			
 			milestones = builder
 				.translation(localizationPath("milestones"))
-				.comment("A list of total hunger values from unique foods needed to unlock each milestone, in ascending order. Values are in half drumsticks. Naturally, adding more milestones lets you earn more hearts.")
+				.comment("A list of total hunger points from unique foods needed to unlock each milestone, in ascending order. Values are in half drumsticks. Naturally, adding more milestones lets you earn more hearts.")
 				.defineList("milestones", Lists.newArrayList(5, 10, 15, 20, 25), () -> 0, e -> e instanceof Integer);
 			
 			builder.pop();
